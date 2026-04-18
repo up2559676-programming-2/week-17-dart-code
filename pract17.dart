@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 void main() {
   print('Uncomment the code in this file to run it');
@@ -70,12 +71,18 @@ void main() {
 void substringDemo() {
   String postcode = 'PO13HF';
   int startIndex = 3, endIndex = 5;
-  print('The substring of "$postcode" from $startIndex to $endIndex is ' +
-      postcode.substring(startIndex, endIndex));
-  print('The substring of "$postcode" from $startIndex to the end is ' +
-      postcode.substring(startIndex));
-  print('The last 3 characters of "$postcode" are ' +
-      postcode.substring(postcode.length - 3));
+  print(
+    'The substring of "$postcode" from $startIndex to $endIndex is ' +
+        postcode.substring(startIndex, endIndex),
+  );
+  print(
+    'The substring of "$postcode" from $startIndex to the end is ' +
+        postcode.substring(startIndex),
+  );
+  print(
+    'The last 3 characters of "$postcode" are ' +
+        postcode.substring(postcode.length - 3),
+  );
 }
 
 void iterateString(String text) {
@@ -191,11 +198,7 @@ void setIteration() {
 }
 
 Map<int, String> createOrders() {
-  Map<int, String> orders = {
-    1: 'Milkshake',
-    2: 'Burger',
-    3: 'Chicken wrap',
-  };
+  Map<int, String> orders = {1: 'Milkshake', 2: 'Burger', 3: 'Chicken wrap'};
   print('Initial orders: $orders');
 
   orders[4] = 'Salad';
@@ -207,11 +210,16 @@ Map<int, String> createOrders() {
   return orders;
 }
 
-void priceRise(Map<String, double> productPrices) {
-  if (productPrices.containsKey('Milk')) {
-    print('Price of milk is £${productPrices['Milk']}');
-  }
-  productPrices['Milk'] = productPrices['Milk']! + 0.20;
+Map<String, double> priceRise(Map<String, double> productPrices) {
+  final updatedPrices = Map<String, double>.from(productPrices);
+
+  updatedPrices.forEach((product, price) {
+    if (product.contains('Finest')) {
+      updatedPrices[product] = price * 1.10;
+    }
+  });
+
+  return updatedPrices;
 }
 
 void listOfMapsDemo() {
@@ -219,12 +227,12 @@ void listOfMapsDemo() {
     {
       'title': 'Call of Duty',
       'price': 49.99,
-      'platforms': ['PlayStation', 'Xbox', 'PC']
+      'platforms': ['PlayStation', 'Xbox', 'PC'],
     },
     {
       'title': 'Warhammer',
       'price': 29.99,
-      'platforms': ['PC', 'macOS']
+      'platforms': ['PC', 'macOS'],
     },
     {
       'title': 'Fortnite',
@@ -233,15 +241,96 @@ void listOfMapsDemo() {
     },
   ];
   for (Map<String, Object> game in games) {
-    print('${game['title']} costs £${game['price']}'
-        ' and is available on ${game['platforms']}');
+    print(
+      '${game['title']} costs £${game['price']}'
+      ' and is available on ${game['platforms']}',
+    );
   }
 
   for (Map<String, Object> game in games) {
     List<String> platforms = game['platforms'] as List<String>;
     if (platforms.contains('PlayStation')) {
-      print('${game['title']} costs £${game['price']}'
-          ' and is available on PlayStation');
+      print(
+        '${game['title']} costs £${game['price']}'
+        ' and is available on PlayStation',
+      );
     }
   }
+}
+
+bool isValidEmail(String email) {
+  final exp = RegExp(r'^up\d{7}@myport.ac.uk$');
+  return exp.hasMatch(email);
+}
+
+bool checkExpenses(List<double> expenditures, double limit) {
+  return expenditures.every((expenditure) => expenditure <= limit);
+}
+
+double weatherDifference(List<double> temperatures) {
+  return (temperatures.first - temperatures.last).abs();
+}
+
+Set<String> removeMilk(Set<String> food) {
+  return food.where((food) => !food.contains("milk")).toSet();
+}
+
+Map<String, Map<String, List<int>>> capMarks(
+  String module,
+  Map<String, Map<String, List<int>>> marks,
+) {
+  final newMarks = Map<String, Map<String, List<int>>>.from(marks);
+
+  final assignments = newMarks[module];
+  if (assignments == null) return newMarks;
+
+  newMarks[module] = assignments.map(
+    (key, value) => MapEntry(key, value.map((mark) => min(mark, 40)).toList()),
+  );
+
+  return newMarks;
+}
+
+String capitalize(String word) {
+  if (word.isEmpty) return word;
+  return word[0].toUpperCase() + word.substring(1).toLowerCase();
+}
+
+String capitalizeSentence(String text) {
+  if (text.isEmpty) return text;
+
+  return text.split(' ').map(capitalize).join(' ');
+}
+
+Set<String> extractHashtags(List<String> posts) {
+  final hashtags = <String>{};
+  final regex = RegExp(r'#\w+');
+
+  for (String post in posts) {
+    final matches = regex.allMatches(post);
+
+    for (RegExpMatch match in matches) {
+      hashtags.add(match.group(0)!);
+    }
+  }
+
+  return hashtags;
+}
+
+String snakeToCamel(String snakeCase) {
+  final parts = snakeCase.split('_');
+  if (parts.isEmpty) return snakeCase;
+
+  final camelCase = StringBuffer();
+  camelCase.write(parts[0]);
+
+  for (int i = 1; i < parts.length; i++) {
+    final word = parts[i];
+    if (word.isEmpty) continue;
+
+    camelCase.write(word[0].toUpperCase());
+    camelCase.write(word.substring(1).toLowerCase());
+  }
+
+  return camelCase.toString();
 }
